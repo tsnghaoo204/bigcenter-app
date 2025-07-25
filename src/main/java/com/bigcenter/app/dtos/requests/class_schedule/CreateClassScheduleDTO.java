@@ -1,0 +1,22 @@
+package com.bigcenter.app.dtos.requests.class_schedule;
+
+import com.bigcenter.app.status.ClassStatus;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.UUID;
+
+@Data
+public class CreateClassScheduleDTO {
+    private LocalDate date;
+    private LocalTime startTime;
+    private LocalTime endTime;
+
+    private UUID tenantId;
+    private UUID classId;
+    private UUID roomId;
+    private UUID teacherId;
+
+    private ClassStatus status;
+}
