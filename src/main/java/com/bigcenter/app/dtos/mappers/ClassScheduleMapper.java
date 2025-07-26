@@ -12,14 +12,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ClassScheduleMapper {
 
-    @Mapping(source = "tenantId", target = "tenant.id")
     @Mapping(source = "classId", target = "classField.id")
     @Mapping(source = "roomId", target = "room.id")
     @Mapping(source = "teacherId", target = "teacher.id")
     ClassSchedule toEntity(CreateClassScheduleDTO dto);
 
-    @Mapping(source = "tenant.id", target = "tenantId")
-    @Mapping(source = "tenant.name", target = "tenantName")
     @Mapping(source = "classField.id", target = "classId")
     @Mapping(source = "classField.name", target = "className")
     @Mapping(source = "room.id", target = "roomId")

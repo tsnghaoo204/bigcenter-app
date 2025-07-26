@@ -1,6 +1,5 @@
 package com.bigcenter.app.dtos.responses;
 
-import com.bigcenter.app.status.UserRole;
 import lombok.Data;
 
 import java.time.Instant;
@@ -14,8 +13,5 @@ public class UserResponseDTO {
     private String email;
     private Boolean enable;
     private Instant createAt;
-    private UUID tenantId;
-    private String tenantName;
-    private UserRole role;
 }
 

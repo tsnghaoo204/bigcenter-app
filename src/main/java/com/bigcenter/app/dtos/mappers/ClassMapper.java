@@ -12,10 +12,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ClassMapper {
 
-    @Mapping(source = "tenantId", target = "tenant.id")
     Class toEntity(CreateClassDTO dto);
 
-    @Mapping(source = "tenant.name", target = "tenantName")
     ClassResponseDTO toResponseDTO(Class entity);
 
     List<ClassResponseDTO> toResponseDTOList(List<Class> entities);

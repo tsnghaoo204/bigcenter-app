@@ -1,6 +1,4 @@
 package com.bigcenter.app.entities;
-
-import com.bigcenter.app.status.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,9 +41,6 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "create_at")
     private Instant createAt;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant;
 
     @OneToOne(mappedBy = "user")
     private Student student;

@@ -11,11 +11,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RoomMapper {
 
-    @Mapping(source = "tenantId", target = "tenant.id")
     Room toEntity(CreateRoomDTO dto);
 
-    @Mapping(source = "tenant.id", target = "tenantId")
-    @Mapping(source = "tenant.name", target = "tenantName")
     RoomResponseDTO toResponseDTO(Room room);
 
     List<RoomResponseDTO> toResponseDTOList(List<Room> list);

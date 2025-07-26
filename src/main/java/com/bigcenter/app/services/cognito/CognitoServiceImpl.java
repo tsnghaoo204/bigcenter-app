@@ -70,6 +70,7 @@ public class CognitoServiceImpl implements CognitoService {
 
         InitiateAuthResponse response = getClient().initiateAuth(authRequest);
         String idToken = response.authenticationResult().idToken();
+        String accessToken = response.authenticationResult().accessToken();
         DecodedJWT jwt = JWT.decode(idToken);
         String sub = jwt.getClaim("sub").asString();
         String userEmail = jwt.getClaim("email").asString();
@@ -88,9 +89,7 @@ public class CognitoServiceImpl implements CognitoService {
 
         System.out.println("User logged in with sub: " + sub + ", email: " + userEmail);
 
-        return idToken;
-
-
+        return accessToken;
     }
 
     @Override
@@ -105,6 +104,13 @@ public class CognitoServiceImpl implements CognitoService {
         ResendConfirmationCodeResponse response = cognitoClient.resendConfirmationCode(request);
 
         System.out.println("Code resent to: " + response.codeDeliveryDetails().destination());
+    }
+
+    @Override
+    public void logout(String token) {
+        getClient().globalSignOut(GlobalSignOutRequest.builder()
+                .accessToken(token)
+                .build());
     }
 }
 

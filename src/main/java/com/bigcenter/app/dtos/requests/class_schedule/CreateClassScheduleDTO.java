@@ -12,8 +12,6 @@ public class CreateClassScheduleDTO {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
-
-    private UUID tenantId;
     private UUID classId;
     private UUID roomId;
     private UUID teacherId;

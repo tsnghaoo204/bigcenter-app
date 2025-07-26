@@ -11,5 +11,4 @@ public class CreateClassDTO {
     private String subject;
     private LocalDate startDate;
     private LocalDate endDate;
-    private UUID tenantId;
 }

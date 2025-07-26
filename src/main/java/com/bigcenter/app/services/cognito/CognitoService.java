@@ -11,4 +11,5 @@ public interface CognitoService {
     void confirmUser(String email, String code);
     String loginUser(String email, String password);
     void resendCode(String email);
+    void logout(String token);
 }

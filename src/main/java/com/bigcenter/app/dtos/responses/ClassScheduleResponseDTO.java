@@ -15,9 +15,6 @@ public class ClassScheduleResponseDTO {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    private UUID tenantId;
-    private String tenantName;
-
     private UUID classId;
     private String className;
 

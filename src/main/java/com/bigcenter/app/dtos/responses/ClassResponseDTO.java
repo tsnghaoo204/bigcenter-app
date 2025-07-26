@@ -17,5 +17,4 @@ public class ClassResponseDTO {
     private String subject;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String tenantName;
 }

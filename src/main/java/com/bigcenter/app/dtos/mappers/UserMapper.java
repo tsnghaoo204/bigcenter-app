@@ -11,11 +11,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(source = "tenantId", target = "tenant.id")
     User toEntity(CreateUserDTO dto);
 
-    @Mapping(source = "tenant.id", target = "tenantId")
-    @Mapping(source = "tenant.name", target = "tenantName")
+
     UserResponseDTO toResponseDTO(User user);
 
     List<UserResponseDTO> toResponseDTOList(List<User> users);

@@ -1,5 +1,7 @@
 package com.bigcenter.app.auths;
 
+import com.bigcenter.app.dtos.requests.EmailRequest;
+import com.bigcenter.app.dtos.requests.TokenRequest;
 import com.bigcenter.app.payloads.RegisterRequest;
 import com.bigcenter.app.payloads.ConfirmRequest;
 import com.bigcenter.app.payloads.LoginRequest;
@@ -16,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest req) {
-        cognitoService.registerUser(req.getEmail(), req.getPassword(), req.getPhone(), req.getPhone());
+        cognitoService.registerUser(req.getEmail(), req.getPassword(), req.getPhone(), req.getFullname());
         return "OTP sent to email or phone";
     }
 
@@ -33,8 +35,14 @@ public class AuthController {
     }
 
     @PostMapping("/resend-code")
-    public String resend(@RequestBody String email) {
-        cognitoService.resendCode(email);
+    public String resend(@RequestBody EmailRequest email) {
+        cognitoService.resendCode(email.getEmail());
         return "OTP sent to email or phone";
+    }
+
+    @PostMapping("/logout")
+    public String logout(@RequestBody TokenRequest token) {
+        cognitoService.logout(token.getToken());
+        return "Logged out successfully";
     }
 }

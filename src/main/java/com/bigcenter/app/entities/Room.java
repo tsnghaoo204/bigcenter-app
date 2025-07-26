@@ -25,9 +25,4 @@ public class Room {
 
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant;
-
 }

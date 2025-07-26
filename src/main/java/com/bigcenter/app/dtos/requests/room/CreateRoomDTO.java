@@ -8,5 +8,4 @@ import java.util.UUID;
 public class CreateRoomDTO {
     private String name;
     private Integer capacity;
-    private UUID tenantId;
 }
