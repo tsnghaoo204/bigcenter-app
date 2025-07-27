@@ -4,6 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bigcenter.app.entities.User;
 import com.bigcenter.app.repositories.UserRepository;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -12,7 +15,9 @@ import software.amazon.awssdk.services.cognitoidentityprovider.*;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class CognitoServiceImpl implements CognitoService {
@@ -22,6 +27,16 @@ public class CognitoServiceImpl implements CognitoService {
 
     @Value("${AWS_REGION}")
     private String region;
+
+    @Value("${COGNITO_USER_POOL_ID}")
+    private String poolId;
+
+    @Value("${AWS_ACCESS_KEY}")
+    private String accessKey;
+
+    @Value("${AWS_SECRET_KEY}")
+    private String secretKey;
+
     private final UserRepository userRepository;
 
     public CognitoServiceImpl(UserRepository userRepository) {
@@ -31,7 +46,12 @@ public class CognitoServiceImpl implements CognitoService {
     private CognitoIdentityProviderClient getClient() {
         return CognitoIdentityProviderClient.builder()
                 .region(Region.of(region))
-                .credentialsProvider(DefaultCredentialsProvider.create())
+                .credentialsProvider(StaticCredentialsProvider.create(
+                                AwsBasicCredentials.create(
+                                        accessKey,
+                                        secretKey
+                                )
+                        ))
                 .build();
     }
 
@@ -57,7 +77,7 @@ public class CognitoServiceImpl implements CognitoService {
         getClient().confirmSignUp(request);
     }
 
-    public String loginUser(String email, String password) {
+    public Map<String, Object> loginUser(String email, String password) {
         Map<String, String> authParams = new HashMap<>();
         authParams.put("USERNAME", email);
         authParams.put("PASSWORD", password);
@@ -76,6 +96,7 @@ public class CognitoServiceImpl implements CognitoService {
         String userEmail = jwt.getClaim("email").asString();
         String phoneNumber = jwt.getClaim("phone_number").asString();
         String name = jwt.getClaim("name").asString();
+        List<String> role = jwt.getClaim("cognito:groups").asList(String.class);
 
         if (!userRepository.existsByCognitoSub(sub)) {
             User user = new User();
@@ -89,7 +110,10 @@ public class CognitoServiceImpl implements CognitoService {
 
         System.out.println("User logged in with sub: " + sub + ", email: " + userEmail);
 
-        return accessToken;
+        return Map.of(
+            "accessToken", accessToken,
+            "role", role
+        );
     }
 
     @Override
@@ -112,5 +136,17 @@ public class CognitoServiceImpl implements CognitoService {
                 .accessToken(token)
                 .build());
     }
+
+    @Override
+    public List<UserType> getUserTypes(String groupName) {
+        ListUsersInGroupRequest request = ListUsersInGroupRequest.builder()
+                .userPoolId(poolId)
+                .groupName(groupName)
+                .build();
+
+        ListUsersInGroupResponse response = getClient().listUsersInGroup(request);
+        return response.users();
+    }
+
 }
 

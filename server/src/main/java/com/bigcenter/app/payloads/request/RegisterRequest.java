@@ -1,4 +1,4 @@
-package com.bigcenter.app.payloads;
+package com.bigcenter.app.payloads.request;
 
 import lombok.Data;
 

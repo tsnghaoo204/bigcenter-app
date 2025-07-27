@@ -1,6 +1,10 @@
 package com.bigcenter.app.services.cognito;
 
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+
+import java.util.List;
+import java.util.Map;
 
 public interface CognitoService {
     private CognitoIdentityProviderClient getClient() {
@@ -9,7 +13,8 @@ public interface CognitoService {
 
     void registerUser(String email, String password, String phone, String fullname);
     void confirmUser(String email, String code);
-    String loginUser(String email, String password);
+    Map<String, Object> loginUser(String email, String password);
     void resendCode(String email);
     void logout(String token);
+    List<UserType> getUserTypes(String groupName);
 }

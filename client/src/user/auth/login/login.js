@@ -21,10 +21,14 @@ const Login = () => {
                 throw new Error('Login failed');
             }
 
-            const data = await response.text();
-            localStorage.setItem('accessToken', data);
+            const data = await response.json();
+            localStorage.setItem('accessToken', data.accessToken);
+            if (data.role.includes('TEACHER')) {
+                navigate('/teacher-dashboard');
+            } else if (data.role.includes('STUDENT')) {
+                navigate('/dashboard');
+            }
 
-            navigate('/dashboard');
         } catch (error) {
             console.error('Login error:', error);
             alert('Login failed. Please check your credentials.');

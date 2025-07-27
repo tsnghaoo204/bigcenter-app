@@ -7,6 +7,7 @@ import java.util.UUID;
 public class UpdateUserDTO {
     private UUID id;
     private String fullName;
+    private String phone;
     private String email;
     private Boolean enable;
 }

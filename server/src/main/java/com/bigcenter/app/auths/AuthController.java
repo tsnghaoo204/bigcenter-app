@@ -2,12 +2,15 @@ package com.bigcenter.app.auths;
 
 import com.bigcenter.app.dtos.requests.EmailRequest;
 import com.bigcenter.app.dtos.requests.TokenRequest;
-import com.bigcenter.app.payloads.RegisterRequest;
-import com.bigcenter.app.payloads.ConfirmRequest;
-import com.bigcenter.app.payloads.LoginRequest;
+import com.bigcenter.app.payloads.request.RegisterRequest;
+import com.bigcenter.app.payloads.request.ConfirmRequest;
+import com.bigcenter.app.payloads.request.LoginRequest;
 import com.bigcenter.app.services.cognito.CognitoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,9 +32,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest req) {
-        String token = cognitoService.loginUser(req.getUsername(), req.getPassword());
-        return token;
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest req) {
+        Map<String, Object> token = cognitoService.loginUser(req.getUsername(), req.getPassword());
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/resend-code")

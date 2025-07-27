@@ -29,6 +29,7 @@ public class Teacher {
     @Column(name = "phone", length = 20)
     private String phone;
 
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "update_at")
     private Instant updateAt;
