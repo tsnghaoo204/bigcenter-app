@@ -8,6 +8,33 @@ const TeacherDashboard = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        const token = localStorage.getItem("accessToken"); // hoặc từ state/context
+
+        try {
+            const response = await fetch("http://localhost:8080/auth/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token }), // 👈 gửi token trong body
+            });
+
+            if (response.ok) {
+                // Xoá token khỏi localStorage
+                localStorage.removeItem("accessToken");
+
+                // Chuyển hướng về trang login
+                window.location.href = "/login";
+            } else {
+                const text = await response.text();
+                console.error("Logout failed:", text);
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
     const mockTeacher = {
         name: "Prof. Sarah Wilson",
         avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
@@ -107,7 +134,7 @@ const TeacherDashboard = () => {
                                 />
                                 <span className="font-medium">{mockTeacher.name}</span>
                             </div>
-                            <button onClick={navigate("/login")} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400">
+                            <button onClick={handleLogout} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400">
                                 <FiLogOut className="w-5 h-5" />
                             </button>
                         </div>

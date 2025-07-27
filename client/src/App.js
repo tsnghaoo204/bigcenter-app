@@ -5,6 +5,7 @@ import Confirm from './user/auth/confirm/confirm';
 import Dashboard from './user/dashboard/student/dashboard';
 import TeacherDashboard from './user/dashboard/teacher/dashboard';
 import Register from './user/auth/register/register';
+import AdminApp from './admin/App';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/admin/*" element={<AdminApp />} /> 
       </Routes>
     </div>
   );
