@@ -17,4 +17,5 @@ public interface CognitoService {
     void resendCode(String email);
     void logout(String token);
     List<UserType> getUserTypes(String groupName);
+    void deleteUser(String email);
 }

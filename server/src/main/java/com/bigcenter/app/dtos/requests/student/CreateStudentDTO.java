@@ -10,5 +10,5 @@ public class CreateStudentDTO {
     private LocalDate dob;
     private String phone;
     private String guardianInf;
-    private String userId;
+    private UUID userId;
 }

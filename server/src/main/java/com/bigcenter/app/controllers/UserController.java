@@ -2,13 +2,14 @@ package com.bigcenter.app.controllers;
 
 import com.bigcenter.app.dtos.requests.user.CreateUserDTO;
 import com.bigcenter.app.dtos.requests.user.UpdateUserDTO;
-import com.bigcenter.app.entities.User;
+import com.bigcenter.app.dtos.responses.UserResponseDTO;
 import com.bigcenter.app.services.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -18,31 +19,44 @@ public class UserController {
 
     private final UserService userService;
 
-    // Create user
+    // ✅ Create user
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody CreateUserDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
-    // Get all users
+    // ✅ Get all users with pagination support (React Admin compatible)
     @GetMapping
-    public ResponseEntity<Set<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers(
+            @RequestParam(name = "_start", defaultValue = "0") int start,
+            @RequestParam(name = "_end", defaultValue = "10") int end
+    ) {
+        List<UserResponseDTO> allUsers = userService.getAllUsers();
+        int total = allUsers.size();
+
+        int toIndex = Math.min(end, total);
+        List<UserResponseDTO> page = allUsers.subList(start, toIndex);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Range", "users " + start + "-" + (toIndex - 1) + "/" + total);
+        headers.add("Access-Control-Expose-Headers", "Content-Range");
+
+        return ResponseEntity.ok().headers(headers).body(page);
     }
 
-    // Get user by ID
+    // ✅ Get user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable UUID id) {
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
-    // Update user
+    // ✅ Update user
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody UpdateUserDTO dto) {
+    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UpdateUserDTO dto) {
         return ResponseEntity.ok(userService.updateUser(dto));
     }
 
-    // Delete user
+    // ✅ Delete user
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);

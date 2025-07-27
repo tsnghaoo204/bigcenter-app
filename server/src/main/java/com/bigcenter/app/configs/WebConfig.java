@@ -17,6 +17,7 @@ public class WebConfig {
                         .allowedOrigins("http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
+                        .exposedHeaders("Content-Range")
                         .allowCredentials(true); // nếu frontend gửi cookie/token
             }
         };

@@ -2,13 +2,14 @@ package com.bigcenter.app.controllers;
 
 import com.bigcenter.app.dtos.requests.student.CreateStudentDTO;
 import com.bigcenter.app.dtos.requests.student.UpdateStudentDTO;
-import com.bigcenter.app.entities.Student;
+import com.bigcenter.app.dtos.responses.StudentResponseDTO;
 import com.bigcenter.app.services.student.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,18 +25,32 @@ public class StudentController {
         return ResponseEntity.ok(result);
     }
 
+    // ✅ Hỗ trợ phân trang + header Content-Range cho React Admin
     @GetMapping
-    public ResponseEntity<Set<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<List<StudentResponseDTO>> getAllStudents(
+            @RequestParam(name = "_start", defaultValue = "0") int start,
+            @RequestParam(name = "_end", defaultValue = "10") int end
+    ) {
+        List<StudentResponseDTO> allStudents = studentService.getAllStudents();
+        int total = allStudents.size();
+
+        int toIndex = Math.min(end, total);
+        List<StudentResponseDTO> page = allStudents.subList(start, toIndex);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Range", "students " + start + "-" + (toIndex - 1) + "/" + total);
+        headers.add("Access-Control-Expose-Headers", "Content-Range");
+
+        return ResponseEntity.ok().headers(headers).body(page);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable("id") UUID id) {
+    public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(studentService.getStudent(id));
     }
 
     @PutMapping
-    public ResponseEntity<Student> updateStudent(@RequestBody UpdateStudentDTO dto) {
+    public ResponseEntity<StudentResponseDTO> updateStudent(@RequestBody UpdateStudentDTO dto) {
         return ResponseEntity.ok(studentService.updateStudent(dto));
     }
 

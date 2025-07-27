@@ -3,6 +3,7 @@ package com.bigcenter.app.services.user;
 import com.bigcenter.app.dtos.mappers.UserMapper;
 import com.bigcenter.app.dtos.requests.user.CreateUserDTO;
 import com.bigcenter.app.dtos.requests.user.UpdateUserDTO;
+import com.bigcenter.app.dtos.responses.UserResponseDTO;
 import com.bigcenter.app.entities.User;
 import com.bigcenter.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +26,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<User> getAllUsers() {
-        return new HashSet<>(userRepository.findAll());
+    public List<UserResponseDTO> getAllUsers() {
+        return userMapper.toResponseDTOList(userRepository.findAll());
     }
 
     @Override
-    public User getUser(UUID id) {
-        return userRepository.findById(id)
+    public UserResponseDTO getUser(UUID id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
+        return userMapper.toResponseDTO(user);
     }
 
     @Override
-    public User updateUser(UpdateUserDTO dto) {
+    public UserResponseDTO updateUser(UpdateUserDTO dto) {
         User user = userRepository.findById(dto.getId())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
@@ -44,11 +46,12 @@ public class UserServiceImpl implements UserService {
         user.setEmail(dto.getEmail());
         user.setFullName(dto.getFullName());
         user.setEnable(dto.getEnable());
-        return userRepository.save(user);
+        userRepository.save(user);
+        return userMapper.toResponseDTO(user);
     }
 
     @Override
-    public List<User> searchUsers(String fullName, String email, String phone) {
+    public List<UserResponseDTO> searchUsers(String fullName, String email, String phone) {
         Specification<User> spec = (root, query, cb) -> cb.conjunction();
 
         if (fullName != null && !fullName.isEmpty()) {
@@ -62,7 +65,7 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        return userRepository.findAll(spec);
+        return userMapper.toResponseDTOList(userRepository.findAll(spec));
     }
 
     @Override

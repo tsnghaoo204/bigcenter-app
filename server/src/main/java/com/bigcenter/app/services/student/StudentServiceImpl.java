@@ -3,15 +3,14 @@ package com.bigcenter.app.services.student;
 import com.bigcenter.app.dtos.mappers.StudentMapper;
 import com.bigcenter.app.dtos.requests.student.CreateStudentDTO;
 import com.bigcenter.app.dtos.requests.student.UpdateStudentDTO;
+import com.bigcenter.app.dtos.responses.StudentResponseDTO;
 import com.bigcenter.app.entities.Student;
 import com.bigcenter.app.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,25 +27,27 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Set<Student> getAllStudents() {
-        return new HashSet<>(studentRepository.findAll());
+    public List<StudentResponseDTO> getAllStudents() {
+        return studentMapper.toResponseDTOList(studentRepository.findAll());
     }
 
     @Override
-    public Student getStudent(UUID studentCode) {
-        return studentRepository.findById(studentCode)
+    public StudentResponseDTO getStudent(UUID studentCode) {
+        Student student = studentRepository.findById(studentCode)
                 .orElseThrow(() -> new NoSuchElementException("Student not found"));
+        return studentMapper.toResponseDTO(student);
     }
 
     @Override
-    public Student updateStudent(UpdateStudentDTO dto) {
+    public StudentResponseDTO updateStudent(UpdateStudentDTO dto) {
         Student student = studentRepository.findById(dto.getId())
                 .orElseThrow(() -> new NoSuchElementException("Student not found"));
 
         student.setDob(dto.getDob());
         student.setPhone(dto.getPhone());
         student.setGuardianInf(dto.getGuardianInf());
-        return studentRepository.save(student);
+        studentRepository.save(student);
+        return studentMapper.toResponseDTO(student);
     }
 
     @Override

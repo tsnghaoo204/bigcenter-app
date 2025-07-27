@@ -12,5 +12,5 @@ public class StudentResponseDTO {
     private String phone;
     private String guardianInf;
     private UUID userId;
-    private String studentName; // lấy từ user.fullname
+    private String studentName;
 }

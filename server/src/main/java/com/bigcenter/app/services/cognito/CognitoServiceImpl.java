@@ -148,5 +148,15 @@ public class CognitoServiceImpl implements CognitoService {
         return response.users();
     }
 
+    @Override
+    public void deleteUser(String email) {
+        AdminDeleteUserRequest request = AdminDeleteUserRequest.builder()
+                .userPoolId(poolId)
+                .username(email)
+                .build();
+
+        getClient().adminDeleteUser(request);
+    }
+
 }
 

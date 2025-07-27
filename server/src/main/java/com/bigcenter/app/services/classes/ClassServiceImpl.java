@@ -3,15 +3,13 @@ package com.bigcenter.app.services.classes;
 import com.bigcenter.app.dtos.mappers.ClassMapper;
 import com.bigcenter.app.dtos.requests.class_rq.CreateClassDTO;
 import com.bigcenter.app.dtos.requests.class_rq.UpdateClassDTO;
+import com.bigcenter.app.dtos.responses.ClassResponseDTO;
 import com.bigcenter.app.entities.Class;
 import com.bigcenter.app.repositories.ClassRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,18 +28,19 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public Set<Class> getAllClass() {
-        return new HashSet<>(classRepository.findAll());
+    public List<ClassResponseDTO> getAllClass() {
+        return classMapper.toResponseDTOList(classRepository.findAll());
     }
 
     @Override
-    public Class getClass(String className) {
-        return classRepository.findByName(className)
+    public ClassResponseDTO getClass(String className) {
+        Class cl = classRepository.findByName(className)
                 .orElseThrow(() -> new NoSuchElementException("Class not found!"));
+        return classMapper.toResponseDTO(cl);
     }
 
     @Override
-    public Class updateClass(UpdateClassDTO dto) {
+    public ClassResponseDTO updateClass(UpdateClassDTO dto) {
         Class existing = classRepository.findById(dto.getId())
                 .orElseThrow(() -> new NoSuchElementException("Class not found!"));
 
@@ -49,7 +48,8 @@ public class ClassServiceImpl implements ClassService {
         existing.setEndDate(dto.getEndDate());
         existing.setStartDate(dto.getStartDate());
         existing.setSubject(dto.getSubject());
-        return classRepository.save(existing);
+        classRepository.save(existing);
+        return classMapper.toResponseDTO(existing);
     }
 
     @Override

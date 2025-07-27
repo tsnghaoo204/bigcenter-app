@@ -3,15 +3,13 @@ package com.bigcenter.app.services.teacher;
 import com.bigcenter.app.dtos.mappers.TeacherMapper;
 import com.bigcenter.app.dtos.requests.teacher.CreateTeacherDTO;
 import com.bigcenter.app.dtos.requests.teacher.UpdateTeacherDTO;
+import com.bigcenter.app.dtos.responses.TeacherResponseDTO;
 import com.bigcenter.app.entities.Teacher;
 import com.bigcenter.app.repositories.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,24 +25,26 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Set<Teacher> getAllTeachers() {
-        return new HashSet<>(teacherRepository.findAll());
+    public List<TeacherResponseDTO> getAllTeachers() {
+        return teacherMapper.toResponseDTOList(teacherRepository.findAll());
     }
 
     @Override
-    public Teacher getTeacher(UUID teacherCode) {
-        return teacherRepository.findById(teacherCode)
+    public TeacherResponseDTO getTeacher(UUID teacherCode) {
+        Teacher teacher = teacherRepository.findById(teacherCode)
                 .orElseThrow(() -> new NoSuchElementException("Teacher not found"));
+        return teacherMapper.toResponseDTO(teacher);
     }
 
     @Override
-    public Teacher updateTeacher(UpdateTeacherDTO dto) {
+    public TeacherResponseDTO updateTeacher(UpdateTeacherDTO dto) {
         Teacher teacher = teacherRepository.findById(dto.getId())
                 .orElseThrow(() -> new NoSuchElementException("Teacher not found"));
 
         teacher.setSpecialization(dto.getSpecialization());
         teacher.setPhone(dto.getPhone());
-        return teacherRepository.save(teacher);
+        teacherRepository.save(teacher);
+        return teacherMapper.toResponseDTO(teacher);
     }
 
     @Override
