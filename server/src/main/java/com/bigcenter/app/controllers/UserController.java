@@ -3,6 +3,8 @@ package com.bigcenter.app.controllers;
 import com.bigcenter.app.dtos.requests.user.CreateUserDTO;
 import com.bigcenter.app.dtos.requests.user.UpdateUserDTO;
 import com.bigcenter.app.dtos.responses.UserResponseDTO;
+import com.bigcenter.app.payloads.request.RoleRequest;
+import com.bigcenter.app.services.cognito.CognitoService;
 import com.bigcenter.app.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final CognitoService cognitoService;
 
     // ✅ Create user
     @PostMapping
@@ -61,5 +64,15 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{username}/role")
+    public ResponseEntity<?> updateRole(@PathVariable String username, @RequestBody RoleRequest request) {
+        try {
+            cognitoService.changeUserRole(username, request.getRole());
+            return ResponseEntity.ok("Role updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error updating role: " + e.getMessage());
+        }
     }
 }

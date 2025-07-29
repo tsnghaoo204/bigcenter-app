@@ -18,4 +18,5 @@ public interface CognitoService {
     void logout(String token);
     List<UserType> getUserTypes(String groupName);
     void deleteUser(String email);
+    public void changeUserRole(String email, String newGroup);
 }

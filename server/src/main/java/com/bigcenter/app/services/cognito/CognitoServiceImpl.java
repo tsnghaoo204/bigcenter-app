@@ -14,10 +14,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.*;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class CognitoServiceImpl implements CognitoService {
@@ -54,6 +51,8 @@ public class CognitoServiceImpl implements CognitoService {
                         ))
                 .build();
     }
+
+    private static final Set<String> listGroups = Set.of("STUDENT", "TEACHER", "ADMIN");
 
 
     public void registerUser(String email, String password, String phone, String fullname) {
@@ -156,6 +155,38 @@ public class CognitoServiceImpl implements CognitoService {
                 .build();
 
         getClient().adminDeleteUser(request);
+    }
+
+    @Override
+    public void changeUserRole(String email, String newGroup) {
+        AdminAddUserToGroupRequest groupRequest = AdminAddUserToGroupRequest.builder()
+                .username(email)
+                .groupName(newGroup)
+                .userPoolId(poolId)
+                .build();
+
+        getClient().adminAddUserToGroup(groupRequest);
+
+        AdminListGroupsForUserRequest listGroupsForUserRequest = AdminListGroupsForUserRequest.builder()
+                .username(email)
+                .userPoolId(poolId)
+                .build();
+
+        AdminListGroupsForUserResponse listGroupsForUserResponse = getClient().adminListGroupsForUser(listGroupsForUserRequest);
+
+        for (GroupType type : listGroupsForUserResponse.groups()) {
+            String groupName = type.groupName();
+            if (listGroups.contains(groupName) && !groupName.equals(newGroup)) {
+                AdminRemoveUserFromGroupRequest request = AdminRemoveUserFromGroupRequest.builder()
+                        .groupName(groupName)
+                        .username(email)
+                        .userPoolId(poolId)
+                        .build();
+
+                getClient().adminRemoveUserFromGroup(request);
+            }
+        }
+
     }
 
 }
