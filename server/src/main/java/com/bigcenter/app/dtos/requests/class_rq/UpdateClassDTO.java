@@ -10,7 +10,6 @@ import java.util.UUID;
 public class UpdateClassDTO {
     private UUID id;
     private String name;
-    private String subject;
     private LocalDate startDate;
     private LocalDate endDate;
 }

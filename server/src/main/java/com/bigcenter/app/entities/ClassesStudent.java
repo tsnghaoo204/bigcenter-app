@@ -1,5 +1,6 @@
 package com.bigcenter.app.entities;
 
+import com.bigcenter.app.entities.id.ClassesStudentId;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

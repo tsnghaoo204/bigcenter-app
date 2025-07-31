@@ -1,4 +1,4 @@
-package com.bigcenter.app.entities;
+package com.bigcenter.app.entities.id;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-07-28T00:51:41+0700",
+    date = "2025-07-31T20:47:52+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Amazon.com Inc.)"
 )
 @Component
@@ -26,7 +26,6 @@ public class ClassMapperImpl implements ClassMapper {
         Class class1 = new Class();
 
         class1.setName( dto.getName() );
-        class1.setSubject( dto.getSubject() );
         class1.setStartDate( dto.getStartDate() );
         class1.setEndDate( dto.getEndDate() );
 
@@ -43,7 +42,6 @@ public class ClassMapperImpl implements ClassMapper {
 
         classResponseDTO.setId( entity.getId() );
         classResponseDTO.setName( entity.getName() );
-        classResponseDTO.setSubject( entity.getSubject() );
         classResponseDTO.setStartDate( entity.getStartDate() );
         classResponseDTO.setEndDate( entity.getEndDate() );
 
@@ -75,9 +73,6 @@ public class ClassMapperImpl implements ClassMapper {
         }
         if ( dto.getName() != null ) {
             entity.setName( dto.getName() );
-        }
-        if ( dto.getSubject() != null ) {
-            entity.setSubject( dto.getSubject() );
         }
         if ( dto.getStartDate() != null ) {
             entity.setStartDate( dto.getStartDate() );

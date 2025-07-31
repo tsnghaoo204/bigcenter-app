@@ -47,7 +47,6 @@ public class ClassServiceImpl implements ClassService {
         existing.setName(dto.getName());
         existing.setEndDate(dto.getEndDate());
         existing.setStartDate(dto.getStartDate());
-        existing.setSubject(dto.getSubject());
         classRepository.save(existing);
         return classMapper.toResponseDTO(existing);
     }
