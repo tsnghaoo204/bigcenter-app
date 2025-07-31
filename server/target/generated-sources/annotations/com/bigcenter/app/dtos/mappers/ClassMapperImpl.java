@@ -1,17 +1,18 @@
 package com.bigcenter.app.dtos.mappers;
 
 import com.bigcenter.app.dtos.requests.class_rq.CreateClassDTO;
-import com.bigcenter.app.dtos.requests.class_rq.UpdateClassDTO;
 import com.bigcenter.app.dtos.responses.ClassResponseDTO;
 import com.bigcenter.app.entities.Class;
+import com.bigcenter.app.entities.Subject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-07-31T20:47:52+0700",
+    date = "2025-08-01T05:05:51+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Amazon.com Inc.)"
 )
 @Component
@@ -25,9 +26,11 @@ public class ClassMapperImpl implements ClassMapper {
 
         Class class1 = new Class();
 
+        class1.setSubject( createClassDTOToSubject( dto ) );
         class1.setName( dto.getName() );
         class1.setStartDate( dto.getStartDate() );
         class1.setEndDate( dto.getEndDate() );
+        class1.setRoom( dto.getRoom() );
 
         return class1;
     }
@@ -40,10 +43,15 @@ public class ClassMapperImpl implements ClassMapper {
 
         ClassResponseDTO classResponseDTO = new ClassResponseDTO();
 
+        UUID id = entitySubjectId( entity );
+        if ( id != null ) {
+            classResponseDTO.setSubjectId( id.toString() );
+        }
         classResponseDTO.setId( entity.getId() );
         classResponseDTO.setName( entity.getName() );
         classResponseDTO.setStartDate( entity.getStartDate() );
         classResponseDTO.setEndDate( entity.getEndDate() );
+        classResponseDTO.setRoom( entity.getRoom() );
 
         return classResponseDTO;
     }
@@ -62,23 +70,30 @@ public class ClassMapperImpl implements ClassMapper {
         return list;
     }
 
-    @Override
-    public void updateEntity(UpdateClassDTO dto, Class entity) {
-        if ( dto == null ) {
-            return;
+    protected Subject createClassDTOToSubject(CreateClassDTO createClassDTO) {
+        if ( createClassDTO == null ) {
+            return null;
         }
 
-        if ( dto.getId() != null ) {
-            entity.setId( dto.getId() );
+        Subject subject = new Subject();
+
+        subject.setId( createClassDTO.getSubjectId() );
+
+        return subject;
+    }
+
+    private UUID entitySubjectId(Class class1) {
+        if ( class1 == null ) {
+            return null;
         }
-        if ( dto.getName() != null ) {
-            entity.setName( dto.getName() );
+        Subject subject = class1.getSubject();
+        if ( subject == null ) {
+            return null;
         }
-        if ( dto.getStartDate() != null ) {
-            entity.setStartDate( dto.getStartDate() );
+        UUID id = subject.getId();
+        if ( id == null ) {
+            return null;
         }
-        if ( dto.getEndDate() != null ) {
-            entity.setEndDate( dto.getEndDate() );
-        }
+        return id;
     }
 }

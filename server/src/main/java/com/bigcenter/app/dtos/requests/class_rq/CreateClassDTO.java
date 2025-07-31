@@ -10,4 +10,6 @@ public class CreateClassDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
+    private String room;
+    private UUID subjectId;
 }

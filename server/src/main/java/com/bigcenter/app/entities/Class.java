@@ -4,11 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -35,4 +33,24 @@ public class Class {
     @Column(name = "room")
     private String room;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id", unique = true)
+    private Subject subject;
+
+    @OneToMany(mappedBy = "classField", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ClassesStudent> classesStudents = new ArrayList<>();
+
+    // Override equals và hashCode để tránh duplicate issues
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Class aClass = (Class) o;
+        return Objects.equals(id, aClass.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

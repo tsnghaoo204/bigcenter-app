@@ -1,8 +1,10 @@
 package com.bigcenter.app.controllers;
 
+import com.bigcenter.app.dtos.requests.grade.GradeDto;
 import com.bigcenter.app.dtos.requests.student.CreateStudentDTO;
 import com.bigcenter.app.dtos.requests.student.UpdateStudentDTO;
 import com.bigcenter.app.dtos.responses.StudentResponseDTO;
+import com.bigcenter.app.services.grade.GradeService;
 import com.bigcenter.app.services.student.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -16,10 +18,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+//@PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
 public class StudentController {
 
     private final StudentService studentService;
+    private final GradeService gradeService;
 
     @PostMapping
     public ResponseEntity<String> createStudent(@RequestBody CreateStudentDTO dto) {
@@ -60,5 +63,10 @@ public class StudentController {
     public ResponseEntity<String> deleteStudent(@PathVariable("id") UUID id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok("Deleted student successfully!");
+    }
+
+    @PostMapping("/grade")
+    public ResponseEntity<String> addGrade( GradeDto dto){
+        return ResponseEntity.ok(gradeService.saveGrade(dto));
     }
 }

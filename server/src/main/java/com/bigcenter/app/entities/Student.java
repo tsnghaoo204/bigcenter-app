@@ -47,4 +47,8 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private Set<Grade> grades = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ClassesStudent> classes = new HashSet<>();
+
+
 }

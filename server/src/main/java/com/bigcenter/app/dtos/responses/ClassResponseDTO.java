@@ -14,7 +14,9 @@ import java.util.UUID;
 public class ClassResponseDTO {
     private UUID id;
     private String name;
-    private String subject;
+    private String subjectId;
     private LocalDate startDate;
     private LocalDate endDate;
+    private String room;
+
 }

@@ -15,7 +15,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "grades", uniqueConstraints = {
-        @UniqueConstraint(name = "unique_grade", columnNames = {"student_id", "class_id", "subject_id"})
+        @UniqueConstraint(name = "uq_subject_id", columnNames = {"subject_id"})
 })
 public class Grade {
     @Id
@@ -36,10 +36,6 @@ public class Grade {
     @JoinColumn(name = "class_id", nullable = false)
     private Class classField;
 
-    @NotNull
-    @Column(name = "subject_id", nullable = false)
-    private Integer subjectId;
-
     @Column(name = "score", precision = 5, scale = 2)
     private BigDecimal score;
 
@@ -52,5 +48,9 @@ public class Grade {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "grade_time")
     private Instant gradeTime;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
 
 }

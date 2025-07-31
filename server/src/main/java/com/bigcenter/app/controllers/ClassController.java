@@ -22,7 +22,7 @@ public class ClassController {
 
     private final ClassService classService;
 
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+//    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<String> createClass(@RequestBody CreateClassDTO dto) {
         String result = classService.createClass(dto);
@@ -52,13 +52,13 @@ public class ClassController {
         return ResponseEntity.ok(classService.getClass(name));
     }
 
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+//    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @PutMapping
     public ResponseEntity<ClassResponseDTO> updateClass(@RequestBody UpdateClassDTO dto) {
         return ResponseEntity.ok(classService.updateClass(dto));
     }
 
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+//    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteClass(@PathVariable("id") UUID id) {
         classService.deleteClass(id);

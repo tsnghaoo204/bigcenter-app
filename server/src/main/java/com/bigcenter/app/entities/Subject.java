@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -15,7 +16,8 @@ import java.util.UUID;
 @Table(name = "subject")
 public class Subject {
     @Id
-    @ColumnDefault("gen_random_uuid()")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @ColumnDefault("uuid_generate_v4()")
     @Column(name = "subject_id", nullable = false)
     private UUID id;
 
@@ -28,8 +30,20 @@ public class Subject {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id")
+    @OneToOne(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Class classField;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subject subject = (Subject) o;
+        return Objects.equals(id, subject.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
@@ -24,24 +25,26 @@ public class CognitoUserInit implements ApplicationRunner {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public void run(ApplicationArguments args) throws Exception {
-        // Load STUDENT group
+        // Xử lý STUDENT
         for (UserType user : cognitoUserService.getUserTypes("STUDENT")) {
-            // Lấy email từ attributes
-            String email = null;
-            String phone = null;
-            for (AttributeType attr : user.attributes()) {
-                if ("email".equals(attr.name())) {
-                    email = attr.value();
-                } else if ("phone_number".equals(attr.name())) {
-                    phone = attr.value();
-                }
-            }
+            final String email = user.attributes().stream()
+                    .filter(attr -> "email".equals(attr.name()))
+                    .map(AttributeType::value)
+                    .findFirst()
+                    .orElse(null);
 
-            if (email == null) continue; // Bỏ qua nếu không có email
+            final String phone = user.attributes().stream()
+                    .filter(attr -> "phone_number".equals(attr.name()))
+                    .map(AttributeType::value)
+                    .findFirst()
+                    .orElse(null);
 
-            User us = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            if (email == null) continue;
+
+            User us = userRepository.findByEmail(email).orElse(null);
+            if (us == null) continue;
 
             if (!studentRepository.existsByUser(us)) {
                 Student student = new Student();
@@ -51,30 +54,29 @@ public class CognitoUserInit implements ApplicationRunner {
             }
         }
 
-
-        // Load TEACHER group
+        // Xử lý TEACHER
         for (UserType user : cognitoUserService.getUserTypes("TEACHER")) {
-            String email = null;
-            String phone = null;
+            final String email = user.attributes().stream()
+                    .filter(attr -> "email".equals(attr.name()))
+                    .map(AttributeType::value)
+                    .findFirst()
+                    .orElse(null);
 
-            for (AttributeType attr : user.attributes()) {
-                if ("email".equals(attr.name())) {
-                    email = attr.value();
-                } else if ("phone_number".equals(attr.name())) {
-                    phone = attr.value();
-                }
-            }
+            final String phone = user.attributes().stream()
+                    .filter(attr -> "phone_number".equals(attr.name()))
+                    .map(AttributeType::value)
+                    .findFirst()
+                    .orElse(null);
 
             if (email == null) continue;
 
-            // Tìm hoặc tạo User nếu chưa có
-            User us = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            User us = userRepository.findByEmail(email).orElse(null);
+            if (us == null) continue;
 
-            if (studentRepository.existsByUser(us)) {
-                studentRepository.deleteByUser(us);
-            }
-            // Nếu Teacher chưa tồn tại với user này thì tạo
+            // Xóa Student bằng native query (tránh TransientObjectException)
+            studentRepository.deleteByUserId(us.getId());
+
+            // Tạo Teacher
             if (!teacherRepository.existsByUser(us)) {
                 Teacher teacher = new Teacher();
                 teacher.setUser(us);
@@ -82,7 +84,5 @@ public class CognitoUserInit implements ApplicationRunner {
                 teacherRepository.save(teacher);
             }
         }
-
     }
 }
-

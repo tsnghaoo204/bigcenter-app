@@ -12,12 +12,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ClassMapper {
 
+    @Mapping(source = "subjectId", target = "subject.id")
     Class toEntity(CreateClassDTO dto);
 
+    @Mapping(source = "subject.id", target = "subjectId")
     ClassResponseDTO toResponseDTO(Class entity);
 
     List<ClassResponseDTO> toResponseDTOList(List<Class> entities);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntity(UpdateClassDTO dto, @MappingTarget Class entity);
 }

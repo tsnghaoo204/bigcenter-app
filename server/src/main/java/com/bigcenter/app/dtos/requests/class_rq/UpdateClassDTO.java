@@ -12,4 +12,6 @@ public class UpdateClassDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
+    private String room;
+    private UUID subject;
 }
