@@ -4,9 +4,11 @@ import com.bigcenter.app.dtos.requests.teacher.CreateTeacherDTO;
 import com.bigcenter.app.dtos.requests.teacher.UpdateTeacherDTO;
 import com.bigcenter.app.dtos.responses.TeacherResponseDTO;
 import com.bigcenter.app.services.teacher.TeacherService;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class TeacherController {
 
     // ✅ Hỗ trợ phân trang + Content-Range cho React Admin
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TeacherResponseDTO>> getAllTeachers(
             @RequestParam(name = "_start", defaultValue = "0") int start,
             @RequestParam(name = "_end", defaultValue = "10") int end
@@ -43,17 +46,20 @@ public class TeacherController {
         return ResponseEntity.ok().headers(headers).body(page);
     }
 
+    @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(teacherService.getTeacher(id));
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeacherResponseDTO> updateTeacher(@RequestBody UpdateTeacherDTO dto) {
         return ResponseEntity.ok(teacherService.updateTeacher(dto));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTeacher(@PathVariable("id") UUID id) {
         teacherService.deleteTeacher(id);
         return ResponseEntity.noContent().build();

@@ -6,9 +6,11 @@ import com.bigcenter.app.dtos.responses.UserResponseDTO;
 import com.bigcenter.app.payloads.request.RoleRequest;
 import com.bigcenter.app.services.cognito.CognitoService;
 import com.bigcenter.app.services.user.UserService;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +26,14 @@ public class UserController {
 
     // ✅ Create user
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> createUser(@RequestBody CreateUserDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
     // ✅ Get all users with pagination support (React Admin compatible)
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers(
             @RequestParam(name = "_start", defaultValue = "0") int start,
             @RequestParam(name = "_end", defaultValue = "10") int end
@@ -49,24 +53,28 @@ public class UserController {
 
     // ✅ Get user by ID
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
     // ✅ Update user
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UpdateUserDTO dto) {
         return ResponseEntity.ok(userService.updateUser(dto));
     }
 
     // ✅ Delete user
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{username}/role")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateRole(@PathVariable String username, @RequestBody RoleRequest request) {
         try {
             cognitoService.changeUserRole(username, request.getRole());
