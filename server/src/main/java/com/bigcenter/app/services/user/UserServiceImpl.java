@@ -5,6 +5,7 @@ import com.bigcenter.app.dtos.requests.user.CreateUserDTO;
 import com.bigcenter.app.dtos.requests.user.UpdateUserDTO;
 import com.bigcenter.app.dtos.responses.UserResponseDTO;
 import com.bigcenter.app.entities.User;
+import com.bigcenter.app.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,14 +34,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO getUser(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return userMapper.toResponseDTO(user);
     }
 
     @Override
     public UserResponseDTO updateUser(UpdateUserDTO dto) {
         User user = userRepository.findById(dto.getId())
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         user.setPhone(dto.getPhone());
         user.setEmail(dto.getEmail());

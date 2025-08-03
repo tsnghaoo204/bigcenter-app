@@ -1,4 +1,4 @@
-package com.bigcenter.app.controllers;
+package com.bigcenter.app.controllers.api;
 
 import com.bigcenter.app.dtos.requests.teacher.CreateTeacherDTO;
 import com.bigcenter.app.dtos.requests.teacher.UpdateTeacherDTO;

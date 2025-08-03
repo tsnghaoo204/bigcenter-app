@@ -1,4 +1,4 @@
-package com.bigcenter.app.controllers;
+package com.bigcenter.app.controllers.api;
 
 import com.bigcenter.app.dtos.requests.class_rq.CreateClassDTO;
 import com.bigcenter.app.dtos.requests.class_rq.UpdateClassDTO;
@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController

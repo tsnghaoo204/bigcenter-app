@@ -5,6 +5,7 @@ import com.bigcenter.app.dtos.requests.teacher.CreateTeacherDTO;
 import com.bigcenter.app.dtos.requests.teacher.UpdateTeacherDTO;
 import com.bigcenter.app.dtos.responses.TeacherResponseDTO;
 import com.bigcenter.app.entities.Teacher;
+import com.bigcenter.app.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,14 +33,14 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public TeacherResponseDTO getTeacher(UUID teacherCode) {
         Teacher teacher = teacherRepository.findById(teacherCode)
-                .orElseThrow(() -> new NoSuchElementException("Teacher not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found"));
         return teacherMapper.toResponseDTO(teacher);
     }
 
     @Override
     public TeacherResponseDTO updateTeacher(UpdateTeacherDTO dto) {
         Teacher teacher = teacherRepository.findById(dto.getId())
-                .orElseThrow(() -> new NoSuchElementException("Teacher not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found"));
 
         teacher.setSpecialization(dto.getSpecialization());
         teacher.setPhone(dto.getPhone());

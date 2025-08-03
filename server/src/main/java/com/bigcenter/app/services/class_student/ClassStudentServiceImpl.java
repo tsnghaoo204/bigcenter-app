@@ -7,11 +7,18 @@ import com.bigcenter.app.dtos.responses.StudentResponseDTO;
 import com.bigcenter.app.entities.Class;
 import com.bigcenter.app.entities.ClassesStudent;
 import com.bigcenter.app.entities.Student;
+import com.bigcenter.app.entities.User;
 import com.bigcenter.app.entities.id.ClassesStudentId;
+import com.bigcenter.app.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.ClassRepository;
 import com.bigcenter.app.repositories.ClassesStudentRepository;
 import com.bigcenter.app.repositories.StudentRepository;
+import com.bigcenter.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,17 +32,18 @@ public class ClassStudentServiceImpl implements ClassesStudentService{
     private final ClassesStudentRepository classesStudentRepository;
     private final StudentMapper studentMapper;
     private final ClassMapper classMapper;
+    private final UserRepository userRepository;
 
     public void enrollStudent(UUID studentId, UUID classId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
         Class clazz = classRepository.findById(classId)
-                .orElseThrow(() -> new RuntimeException("Class not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
 
         ClassesStudentId id = new ClassesStudentId(classId, studentId);
         if (classesStudentRepository.existsById(id)) {
-            throw new RuntimeException("Student already enrolled in this class");
+            throw new ResourceNotFoundException("Student already enrolled in this class");
         }
 
         ClassesStudent enrollment = new ClassesStudent();
@@ -50,11 +58,23 @@ public class ClassStudentServiceImpl implements ClassesStudentService{
         classesStudentRepository.deleteById(id);
     }
 
-    public List<StudentResponseDTO> getStudentsInClass(UUID classId) {
-        return studentMapper.toResponseDTOList(classesStudentRepository.findStudentsByClassId(classId));
+    @Override
+    public List<ClassResponseDTO> getClassesOfToken(Jwt jwt) {
+        String sub = jwt.getClaim("sub");
+        User user = userRepository.findByCognitoSub(sub)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Student student = studentRepository.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found!"));
+        List<Class> classList = classesStudentRepository.findClassesByStudentId(student.getId());
+        return classMapper.toResponseDTOList(classList);
     }
 
-    public List<ClassResponseDTO> getClassesOfStudent(UUID studentId) {
-        return classMapper.toResponseDTOList(classesStudentRepository.findClassesByStudentId(studentId));
+    public List<StudentResponseDTO> getStudentsInClass(UUID classId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+            System.out.println(authority.getAuthority());
+        }
+        return studentMapper.toResponseDTOList(classesStudentRepository.findStudentsByClassId(classId));
     }
 }

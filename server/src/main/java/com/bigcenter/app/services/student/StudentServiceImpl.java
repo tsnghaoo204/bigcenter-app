@@ -5,6 +5,7 @@ import com.bigcenter.app.dtos.requests.student.CreateStudentDTO;
 import com.bigcenter.app.dtos.requests.student.UpdateStudentDTO;
 import com.bigcenter.app.dtos.responses.StudentResponseDTO;
 import com.bigcenter.app.entities.Student;
+import com.bigcenter.app.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,14 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResponseDTO getStudent(UUID studentCode) {
         Student student = studentRepository.findById(studentCode)
-                .orElseThrow(() -> new NoSuchElementException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         return studentMapper.toResponseDTO(student);
     }
 
     @Override
     public StudentResponseDTO updateStudent(UpdateStudentDTO dto) {
         Student student = studentRepository.findById(dto.getId())
-                .orElseThrow(() -> new NoSuchElementException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
         student.setDob(dto.getDob());
         student.setPhone(dto.getPhone());

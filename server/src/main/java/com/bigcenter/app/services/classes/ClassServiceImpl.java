@@ -5,6 +5,7 @@ import com.bigcenter.app.dtos.requests.class_rq.CreateClassDTO;
 import com.bigcenter.app.dtos.requests.class_rq.UpdateClassDTO;
 import com.bigcenter.app.dtos.responses.ClassResponseDTO;
 import com.bigcenter.app.entities.Class;
+import com.bigcenter.app.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.ClassRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,14 +62,14 @@ public class ClassServiceImpl implements ClassService {
     @Transactional(readOnly = true)
     public ClassResponseDTO getClass(String className) {
         Class cl = classRepository.findByName(className)
-                .orElseThrow(() -> new NoSuchElementException("Class not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Class not found!"));
         return classMapper.toResponseDTO(cl);
     }
 
     @Override
     public ClassResponseDTO updateClass(UpdateClassDTO dto) {
         Class existing = classRepository.findById(dto.getId())
-                .orElseThrow(() -> new NoSuchElementException("Class not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Class not found!"));
 
         existing.setName(dto.getName());
         existing.setEndDate(dto.getEndDate());
@@ -81,11 +82,10 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public void deleteClass(UUID id) {
         if (!classRepository.existsById(id)) {
-            throw new NoSuchElementException("Class not found!");
+            throw new ResourceNotFoundException("Class not found!");
         }
         classRepository.deleteById(id);
     }
-
     // Method để check và clean duplicate data
     public void checkAndCleanDuplicates() {
         List<Object[]> duplicates = classRepository.findDuplicateIds();

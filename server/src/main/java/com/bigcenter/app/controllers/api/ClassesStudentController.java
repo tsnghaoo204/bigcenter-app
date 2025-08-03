@@ -1,11 +1,15 @@
-package com.bigcenter.app.controllers;
+package com.bigcenter.app.controllers.api;
 
 import com.bigcenter.app.services.class_student.ClassesStudentService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -39,18 +43,14 @@ public class ClassesStudentController {
         classesStudentService.removeStudentFromClass(studentId, classId);
         return ResponseEntity.ok("Student removed from class");
     }
-
-    // Get students in a class
-    @PermitAll
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @GetMapping("/class/{classId}/students")
     public ResponseEntity<?> getStudentsInClass(@PathVariable UUID classId) {
         return ResponseEntity.ok(classesStudentService.getStudentsInClass(classId));
     }
 
-    // Get classes of a student
-    @PermitAll
-    @GetMapping("/student/{studentId}/classes")
-    public ResponseEntity<?> getClassesOfStudent(@PathVariable UUID studentId) {
-        return ResponseEntity.ok(classesStudentService.getClassesOfStudent(studentId));
+    @GetMapping("/student/classes")
+    public ResponseEntity<?> getClassesOfStudent(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(classesStudentService.getClassesOfToken(jwt));
     }
 }

@@ -1,4 +1,4 @@
-package com.bigcenter.app.controllers;
+package com.bigcenter.app.controllers.api;
 
 import com.bigcenter.app.dtos.requests.user.CreateUserDTO;
 import com.bigcenter.app.dtos.requests.user.UpdateUserDTO;
