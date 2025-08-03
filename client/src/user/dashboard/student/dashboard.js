@@ -15,9 +15,10 @@ import { Chart as ChartJS } from "chart.js/auto";
 const Dashboard = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [classes, setClasses] = useState([]);
 
     const handleLogout = async () => {
-        const token = localStorage.getItem("accessToken"); // hoặc từ state/context
+        const token = localStorage.getItem("accessToken");
 
         try {
             const response = await fetch("http://localhost:8080/auth/logout", {
@@ -25,14 +26,11 @@ const Dashboard = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ token }), // 👈 gửi token trong body
+                body: JSON.stringify({ token }),
             });
 
             if (response.ok) {
-                // Xoá token khỏi localStorage
                 localStorage.removeItem("accessToken");
-
-                // Chuyển hướng về trang login
                 window.location.href = "/login";
             } else {
                 const text = await response.text();
@@ -46,23 +44,6 @@ const Dashboard = () => {
     const mockStudent = {
         name: "John Smith",
         avatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d",
-        level: "Advanced",
-        enrolledCourses: [
-            {
-                id: 1,
-                name: "Business English",
-                progress: 75,
-                nextClass: "2024-02-10 09:00 AM",
-                image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40",
-            },
-            {
-                id: 2,
-                name: "IELTS Preparation",
-                progress: 60,
-                nextClass: "2024-02-11 02:00 PM",
-                image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173",
-            },
-        ],
         skills: {
             reading: 85,
             writing: 78,
@@ -86,7 +67,31 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        setTimeout(() => setLoading(false), 1500);
+        const fetchClasses = async () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) return;
+
+            try {
+                const response = await fetch("http://localhost:8080/api/classes-students/student/classes", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch classes");
+                }
+
+                const data = await response.json();
+                setClasses(data);
+            } catch (error) {
+                console.error("Error fetching classes:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClasses();
     }, []);
 
     const performanceData = {
@@ -149,36 +154,22 @@ const Dashboard = () => {
                         <div className="lg:col-span-2">
                             <h2 className="text-xl font-semibold mb-4">My Courses</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {mockStudent.enrolledCourses.map((course) => (
+                                {classes.map((course) => (
                                     <div
                                         key={course.id}
                                         className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow"
                                     >
-                                        <img
-                                            src={course.image}
-                                            alt={course.name}
-                                            className="w-full h-40 object-cover rounded-md mb-4"
-                                        />
+                                        {/* Ảnh đã bị loại bỏ */}
                                         <h3 className="font-medium text-lg mb-2">{course.name}</h3>
-                                        <div className="mb-2">
-                                            <div className="flex justify-between text-sm mb-1">
-                                                <span>Progress</span>
-                                                <span>{course.progress}%</span>
-                                            </div>
-                                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                                <div
-                                                    className="bg-indigo-600 h-2 rounded-full"
-                                                    style={{ width: `${course.progress}%` }}
-                                                ></div>
-                                            </div>
-                                        </div>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            Next class: {course.nextClass}
+                                            Room: {course.room}<br />
+                                            From: {course.startDate} to {course.endDate}
                                         </p>
                                     </div>
                                 ))}
                             </div>
                         </div>
+
 
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
                             <h2 className="text-xl font-semibold mb-4">Performance</h2>
@@ -206,16 +197,16 @@ const Dashboard = () => {
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
                             <h2 className="text-xl font-semibold mb-4">Learning Resources</h2>
                             <div className="grid grid-cols-2 gap-4">
-                                <button className="resource-button">
+                                <button className="resource-button flex items-center justify-center bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 py-2 px-4 rounded-md">
                                     <FiBook className="w-6 h-6 mr-2" /> Study Materials
                                 </button>
-                                <button className="resource-button">
+                                <button className="resource-button flex items-center justify-center bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 py-2 px-4 rounded-md">
                                     <FiVideo className="w-6 h-6 mr-2" /> Video Tutorials
                                 </button>
-                                <button className="resource-button">
+                                <button className="resource-button flex items-center justify-center bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 py-2 px-4 rounded-md">
                                     <FiDownload className="w-6 h-6 mr-2" /> Downloads
                                 </button>
-                                <button className="resource-button">
+                                <button className="resource-button flex items-center justify-center bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 py-2 px-4 rounded-md">
                                     <FiCalendar className="w-6 h-6 mr-2" /> Schedule
                                 </button>
                             </div>
