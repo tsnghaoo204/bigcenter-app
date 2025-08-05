@@ -14,15 +14,4 @@ public interface ClassRepository extends JpaRepository<Class, UUID> {
 
     Boolean existsByName(String name);
 
-    // Custom query để tránh duplicate issue khi fetch với OneToOne
-    @Query("SELECT c FROM Class c")
-    List<Class> findAllClasses();
-
-    // Query với JOIN FETCH cho OneToOne relationship
-    @Query("SELECT c FROM Class c LEFT JOIN FETCH c.subject LEFT JOIN FETCH c.classesStudents")
-    List<Class> findAllWithRelations();
-
-    // Query để kiểm tra duplicate
-    @Query("SELECT c.id, COUNT(c) FROM Class c GROUP BY c.id HAVING COUNT(c) > 1")
-    List<Object[]> findDuplicateIds();
 }

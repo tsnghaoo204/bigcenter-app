@@ -36,26 +36,11 @@ public class ClassServiceImpl implements ClassService {
     @Override
     @Transactional(readOnly = true)
     public List<ClassResponseDTO> getAllClass() {
-        try {
-            // Sử dụng simple query trước
-            List<Class> classes = classRepository.findAllClasses();
+            List<Class> classes = classRepository.findAll();
 
             return classes.stream()
                     .map(classMapper::toResponseDTO)
                     .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            log.error("Error getting all classes: ", e);
-
-            // Debug: Check for duplicates first
-            checkAndCleanDuplicates();
-
-            // Fallback với paging để tránh load hết data
-            return classRepository.findAll().stream()
-                    .limit(100) // Giới hạn để test
-                    .map(classMapper::toResponseDTO)
-                    .collect(Collectors.toList());
-        }
     }
 
     @Override
@@ -85,16 +70,5 @@ public class ClassServiceImpl implements ClassService {
             throw new ResourceNotFoundException("Class not found!");
         }
         classRepository.deleteById(id);
-    }
-    // Method để check và clean duplicate data
-    public void checkAndCleanDuplicates() {
-        List<Object[]> duplicates = classRepository.findDuplicateIds();
-        if (!duplicates.isEmpty()) {
-            log.warn("Found {} duplicate class IDs", duplicates.size());
-            // Log thông tin duplicate để debug
-            duplicates.forEach(dup ->
-                    log.warn("Duplicate ID: {}, Count: {}", dup[0], dup[1])
-            );
-        }
     }
 }
