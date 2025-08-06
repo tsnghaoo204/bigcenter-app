@@ -27,7 +27,6 @@ public class StudentController {
 
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<String> createStudent(@RequestBody CreateStudentDTO dto) {
         String result = studentService.createStudent(dto);
         return ResponseEntity.ok(result);
@@ -35,7 +34,6 @@ public class StudentController {
 
     // ✅ Hỗ trợ phân trang + header Content-Range cho React Admin
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<StudentResponseDTO>> getAllStudents(
             @RequestParam(name = "_start", defaultValue = "0") int start,
             @RequestParam(name = "_end", defaultValue = "10") int end
@@ -64,7 +62,6 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateStudent(dto));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable("id") UUID id) {
         studentService.deleteStudent(id);
@@ -72,9 +69,11 @@ public class StudentController {
     }
 
     @PostMapping("/grade")
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<String> addGrade( GradeDto dto){
-        return ResponseEntity.ok(gradeService.saveGrade(dto));
+    public ResponseEntity<String> addGrade(@RequestParam(name = "studentId") UUID studentId,
+                                           @RequestParam(name = "classId") UUID classId,
+                                           @RequestParam(name = "subjectId") UUID subjectId,
+                                           GradeDto dto){
+        return ResponseEntity.ok(gradeService.saveGrade(studentId, classId, subjectId,dto));
     }
 
 

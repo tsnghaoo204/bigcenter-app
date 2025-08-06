@@ -24,7 +24,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/classes-students/student/classes").hasRole("STUDENT")
-                        .anyRequest().permitAll()
+                        .requestMatchers("/api/classes/**").hasRole("ADMIN")
+                        .requestMatchers("/api/classes-students/**").hasRole("ADMIN")
+                        .requestMatchers("/api/classes-students/remove").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers("/api/classes-students/class/**").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers("/api/students/**").hasRole("ADMIN")
+                        .requestMatchers("/api/students/grade").hasRole("TEACHER")
+                        .requestMatchers("/api/subjects/**").hasRole("ADMIN")
+                        .requestMatchers("/api/teachers/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt

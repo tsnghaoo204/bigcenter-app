@@ -28,7 +28,6 @@ public class TeacherController {
 
     // ✅ Hỗ trợ phân trang + Content-Range cho React Admin
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TeacherResponseDTO>> getAllTeachers(
             @RequestParam(name = "_start", defaultValue = "0") int start,
             @RequestParam(name = "_end", defaultValue = "10") int end
@@ -46,14 +45,12 @@ public class TeacherController {
         return ResponseEntity.ok().headers(headers).body(page);
     }
 
-    @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(teacherService.getTeacher(id));
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeacherResponseDTO> updateTeacher(@RequestBody UpdateTeacherDTO dto) {
         return ResponseEntity.ok(teacherService.updateTeacher(dto));
     }

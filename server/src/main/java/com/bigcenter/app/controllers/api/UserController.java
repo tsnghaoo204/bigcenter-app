@@ -26,14 +26,12 @@ public class UserController {
 
     // ✅ Create user
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> createUser(@RequestBody CreateUserDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
     // ✅ Get all users with pagination support (React Admin compatible)
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers(
             @RequestParam(name = "_start", defaultValue = "0") int start,
             @RequestParam(name = "_end", defaultValue = "10") int end
@@ -60,21 +58,18 @@ public class UserController {
 
     // ✅ Update user
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UpdateUserDTO dto) {
         return ResponseEntity.ok(userService.updateUser(dto));
     }
 
     // ✅ Delete user
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{username}/role")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateRole(@PathVariable String username, @RequestBody RoleRequest request) {
         try {
             cognitoService.changeUserRole(username, request.getRole());

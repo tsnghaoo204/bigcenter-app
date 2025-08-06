@@ -13,9 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GradeDto {
-    private UUID studentId;
-    private UUID classId;
-    private UUID subjectId;
     private BigDecimal score;
     private BigDecimal midtermScore;
     private BigDecimal finalScore;

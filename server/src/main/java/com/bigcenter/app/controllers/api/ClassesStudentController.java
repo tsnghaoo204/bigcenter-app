@@ -23,7 +23,6 @@ public class ClassesStudentController {
     }
 
     // Enroll student to a class
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @PostMapping("/enroll")
     public ResponseEntity<String> enrollStudent(
             @RequestParam UUID studentId,
@@ -34,7 +33,6 @@ public class ClassesStudentController {
     }
 
     // Remove student from a class
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @DeleteMapping("/remove")
     public ResponseEntity<String> removeStudentFromClass(
             @RequestParam UUID studentId,
@@ -43,7 +41,7 @@ public class ClassesStudentController {
         classesStudentService.removeStudentFromClass(studentId, classId);
         return ResponseEntity.ok("Student removed from class");
     }
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+
     @GetMapping("/class/{classId}/students")
     public ResponseEntity<?> getStudentsInClass(@PathVariable UUID classId) {
         return ResponseEntity.ok(classesStudentService.getStudentsInClass(classId));

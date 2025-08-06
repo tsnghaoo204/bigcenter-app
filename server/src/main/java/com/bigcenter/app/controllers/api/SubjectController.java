@@ -22,21 +22,18 @@ public class SubjectController {
 
     // Thêm môn học
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addSubject(@RequestBody SubjectDto subjectDto) {
         String result = subjectService.addSubject(subjectDto);
         return ResponseEntity.ok(result);
     }
 
     // Lấy danh sách môn học
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @GetMapping
     public ResponseEntity<List<SubjectResponseDTO>> getAllSubjects() {
         return ResponseEntity.ok(subjectService.getAllSubjects());
     }
 
     // Xóa môn học theo ID
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteSubject(@PathVariable UUID id) {
         subjectService.deleteSubject(id);

@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class GradeServiceImpl implements GradeService {
@@ -25,12 +27,12 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     @Transactional
-    public String saveGrade(GradeDto grade) {
-        Student student = studentRepository.findById(grade.getStudentId())
+    public String saveGrade(UUID studentId, UUID classId, UUID subjectID, GradeDto grade) {
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
-        Class clazz = classRepository.findById(grade.getClassId())
+        Class clazz = classRepository.findById(classId)
                 .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
-        Subject subject = subjectRepository.findById(grade.getSubjectId())
+        Subject subject = subjectRepository.findById(subjectID)
                         .orElseThrow(() -> new ResourceNotFoundException("Subject not found"));
 
         gradeRepository.save(gradeMapper.toEntity(grade));

@@ -21,13 +21,11 @@ public class ClassController {
 
     private final ClassService classService;
 
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<String> createClass(@RequestBody CreateClassDTO dto) {
         String result = classService.createClass(dto);
         return ResponseEntity.ok(result);
     }
-    @PermitAll
     @GetMapping
     public ResponseEntity<List<ClassResponseDTO>> getAllClasses(
         @RequestParam(name = "_start", defaultValue = "0") int start,
@@ -45,19 +43,16 @@ public class ClassController {
 
             return ResponseEntity.ok().headers(headers).body(page);
         }
-    @PermitAll
     @GetMapping("/{name}")
     public ResponseEntity<ClassResponseDTO> getClassByName(@PathVariable("name") String name) {
         return ResponseEntity.ok(classService.getClass(name));
     }
 
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @PutMapping
     public ResponseEntity<ClassResponseDTO> updateClass(@RequestBody UpdateClassDTO dto) {
         return ResponseEntity.ok(classService.updateClass(dto));
     }
 
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteClass(@PathVariable("id") UUID id) {
         classService.deleteClass(id);
