@@ -1,6 +1,6 @@
 # EduCenter Management System
 
-A modern platform to manage an educational center, including user authentication, scheduling, and access control. Built with Spring Boot, PostgreSQL, AWS S3 to store media file and AWS Cognito for secure and scalable user management.
+A monolythic project to manage an educational center, including user authentication, scheduling, and access control. Built with Spring Boot, PostgreSQL, AWS S3 to store media file and AWS Cognito for secure and scalable user management.
 
 ---
 
@@ -28,6 +28,7 @@ A modern platform to manage an educational center, including user authentication
 | JPA Buddy       | Generate JPA CRUD & Entity Mapping   |
 | AWS Lambda      | Auto group assignment on sign-up     |
 | AWS S3          | Store image to cloud                 |
+| Docker          | Docker implementation                |
 
 ---
 
