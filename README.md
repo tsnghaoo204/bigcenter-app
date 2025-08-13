@@ -32,14 +32,21 @@ A monolythic project to manage an educational center, including user authenticat
 
 ---
 
+## Project Structure
+### /client: UI Login, Sign Up, Confirm Email, Teacher Dashboard, Student Dashboard, Admin Dashboard by reacr-admin
+### /server: Back-end include configurations, services and REST controllers
+
+---
+
 ## ⚙️ Setup Instructions
 
-### 1. Clone the Repository
+### Clone the Repository
 ```bash
-https://github.com/tsnghaoo204/bigcenter-microservice.git
-cd bigcenter-microservice
+https://github.com/tsnghaoo204/bigcenter-app.git
+cd bigcenter-app
 ```
-### 2. Configure Environment
+## In Java IDE (IDEA Intellij, Eclipse,..)
+### 1. Configure Environment
 Update application.properties:
 ```
 # Database Configuration
@@ -55,7 +62,7 @@ AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
 AWS_SECRET_KEY=${AWS_SECRET_KEY}
 AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
 ```
-### 3. Configure docker-compose.yml
+### 2. Configure docker-compose.yml
 ```
 version: '3.8'
 
@@ -74,7 +81,7 @@ services:
     env_file:
       - .env
 ```
-### 4. Build & Run
+### 3. Build & Run
 #### Spring Boot Application
 ```
 ./mvnw clean install
@@ -84,4 +91,21 @@ services:
 ```
 docker compose up --build
 ```
+## In Front-end IDE (VS Code)
+### 1. Open /client folder
+### 2. Install project libraries
+```
+cd /client
+npm install
+```
+### 3. Run
+```
+npm start
+```
+
+## Testing API
+### Using Swagger: 
+http://localhost:8080/swagger-ui/index.html#/
+
+
 
