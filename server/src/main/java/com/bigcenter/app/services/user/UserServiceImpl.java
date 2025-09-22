@@ -5,7 +5,7 @@ import com.bigcenter.app.dtos.requests.user.CreateUserDTO;
 import com.bigcenter.app.dtos.requests.user.UpdateUserDTO;
 import com.bigcenter.app.dtos.responses.UserResponseDTO;
 import com.bigcenter.app.entities.User;
-import com.bigcenter.app.exceptions.ResourceNotFoundException;
+import com.bigcenter.app.payloads.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;

@@ -9,7 +9,7 @@ import com.bigcenter.app.entities.ClassesStudent;
 import com.bigcenter.app.entities.Student;
 import com.bigcenter.app.entities.User;
 import com.bigcenter.app.entities.id.ClassesStudentId;
-import com.bigcenter.app.exceptions.ResourceNotFoundException;
+import com.bigcenter.app.payloads.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.ClassRepository;
 import com.bigcenter.app.repositories.ClassesStudentRepository;
 import com.bigcenter.app.repositories.StudentRepository;

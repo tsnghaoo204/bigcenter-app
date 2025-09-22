@@ -5,7 +5,7 @@ import com.bigcenter.app.dtos.requests.class_rq.CreateClassDTO;
 import com.bigcenter.app.dtos.requests.class_rq.UpdateClassDTO;
 import com.bigcenter.app.dtos.responses.ClassResponseDTO;
 import com.bigcenter.app.entities.Class;
-import com.bigcenter.app.exceptions.ResourceNotFoundException;
+import com.bigcenter.app.payloads.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.ClassRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

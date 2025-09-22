@@ -5,7 +5,7 @@ import com.bigcenter.app.dtos.requests.teacher.CreateTeacherDTO;
 import com.bigcenter.app.dtos.requests.teacher.UpdateTeacherDTO;
 import com.bigcenter.app.dtos.responses.TeacherResponseDTO;
 import com.bigcenter.app.entities.Teacher;
-import com.bigcenter.app.exceptions.ResourceNotFoundException;
+import com.bigcenter.app.payloads.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

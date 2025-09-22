@@ -5,13 +5,12 @@ import com.bigcenter.app.dtos.requests.student.CreateStudentDTO;
 import com.bigcenter.app.dtos.requests.student.UpdateStudentDTO;
 import com.bigcenter.app.dtos.responses.StudentResponseDTO;
 import com.bigcenter.app.entities.Student;
-import com.bigcenter.app.exceptions.ResourceNotFoundException;
+import com.bigcenter.app.payloads.exceptions.ResourceNotFoundException;
 import com.bigcenter.app.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

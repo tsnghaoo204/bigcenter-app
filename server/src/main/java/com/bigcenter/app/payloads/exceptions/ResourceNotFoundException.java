@@ -1,4 +1,4 @@
-package com.bigcenter.app.exceptions;
+package com.bigcenter.app.payloads.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {
